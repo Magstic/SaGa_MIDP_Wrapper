@@ -153,6 +153,9 @@ public final class SoundPatch {
             String methodDesc = ci.utf[u2(data, p + 4)];
             boolean targetMethod = "mediaAction".equals(methodName)
                     && "(Lcom/nttdocomo/ui/MediaPresenter;II)V".equals(methodDesc);
+            if (targetMethod) {
+                putU2(data, p, u2(data, p) & ~0x0020);
+            }
             p += 6;
             int attrs = u2(data, p); p += 2;
             for (int a = 0; a < attrs; a++) {
