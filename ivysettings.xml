@@ -1,0 +1,12 @@
+<ivysettings>
+    <settings defaultResolver="central"/>
+    <resolvers>
+        <ibiblio name="central" m2compatible="true" root="https://repo.maven.apache.org/maven2/"/>
+        <url name="mld-player" descriptor="optional">
+            <artifact pattern="https://github.com/Magstic/MLD_Player/releases/download/[revision]/mld-player.jar"/>
+        </url>
+    </resolvers>
+    <modules>
+        <module organisation="com.github.Magstic" name="mld-player" resolver="mld-player"/>
+    </modules>
+</ivysettings>

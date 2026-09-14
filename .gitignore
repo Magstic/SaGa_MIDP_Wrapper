@@ -1,4 +1,6 @@
 /build/
 /dist/
-/game/
-/lib/*.jar
+/games/*jam
+/games/*jar
+/games/*sp
+/comp/translation/*.tsv
