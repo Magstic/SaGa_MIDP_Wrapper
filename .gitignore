@@ -4,3 +4,4 @@
 /games/*jar
 /games/*sp
 /comp/translation/*.tsv
+/.deps/

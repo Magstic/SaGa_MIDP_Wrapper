@@ -3,8 +3,7 @@
     <property name="comp.dir" value="comp"/>
     <property name="assets.dir" value="assets"/>
 
-    <property name="runtime.repo" value="https://github.com/Magstic/DoJa_MIDP_Runtime.git"/>
-    <property name="tools.repo" value="https://github.com/Magstic/DoJa_MIDP_Tools.git"/>
+    <property name="core.repo" value="https://github.com/Magstic/DoJa-to-MIDP-Core"/>
 
     <property name="translation.dir" value="${comp.dir}/translation"/>
     <property name="translation.config" value="${translation.dir}/config.properties"/>
@@ -26,8 +25,9 @@
     <property name="dist.dir" value="dist"/>
 
     <property name="deps.dir" value=".deps"/>
-    <property name="runtime.src" value="${deps.dir}/runtime"/>
-    <property name="tools.src" value="${deps.dir}/tools"/>
+    <property name="core.dir" value="${deps.dir}/core"/>
+    <property name="runtime.src" value="${core.dir}/runtime"/>
+    <property name="tools.src" value="${core.dir}/tools"/>
     <property name="deps.lib" value="${deps.dir}/lib"/>
     <property name="ivy.version" value="2.5.3"/>
     <property name="ivy.jar" value="${deps.dir}/ivy/ivy-${ivy.version}.jar"/>
@@ -124,31 +124,22 @@
         <fail message="MLD_Player 1.3 checksum mismatch"><condition><not><istrue value="${mld.ok}"/></not></condition></fail>
     </target>
 
-    <target name="check-runtime">
-        <available file="${runtime.src}/com/nttdocomo/ui/IApplication.java" property="runtime.present"/>
+    <target name="check-core">
+        <condition property="core.present"><and>
+            <available file="${runtime.src}/com/nttdocomo/ui/IApplication.java"/>
+            <available file="${tools.src}/jam/Jam.java"/>
+        </and></condition>
     </target>
-    <target name="fetch-runtime" depends="check-runtime" unless="runtime.present">
+    <target name="fetch-core" depends="check-core" unless="core.present">
         <mkdir dir="${deps.dir}"/>
         <exec executable="git" failonerror="true">
             <arg value="clone"/><arg value="--depth"/><arg value="1"/>
-            <arg value="${runtime.repo}"/><arg value="${runtime.src}"/>
+            <arg value="${core.repo}"/><arg value="${core.dir}"/>
         </exec>
     </target>
-    <target name="runtime" depends="fetch-runtime"/>
+    <target name="core" depends="fetch-core"/>
 
-    <target name="check-tools">
-        <available file="${tools.src}/jam/Jam.java" property="tools.present"/>
-    </target>
-    <target name="fetch-tools" depends="check-tools" unless="tools.present">
-        <mkdir dir="${deps.dir}"/>
-        <exec executable="git" failonerror="true">
-            <arg value="clone"/><arg value="--depth"/><arg value="1"/>
-            <arg value="${tools.repo}"/><arg value="${deps.dir}/tools"/>
-        </exec>
-    </target>
-    <target name="tools" depends="fetch-tools"/>
-
-    <target name="check-runtime-source" depends="runtime">
+    <target name="check-runtime-source" depends="core">
         <resourcecount property="runtime.classliteral.count">
             <fileset dir="${runtime.src}" includes="**/*.java">
                 <containsregexp expression="[.]class([^A-Za-z0-9_$]|$)"/>
@@ -175,7 +166,7 @@
         <delete dir="${dist.dir}"/>
     </target>
 
-    <target name="prepare" depends="reset-output,check-build-jdk,locate-game,dependencies,runtime,tools">
+    <target name="prepare" depends="reset-output,check-build-jdk,locate-game,dependencies,core">
         <mkdir dir="${tools.classes}"/>
         <mkdir dir="${comp.classes}"/>
         <mkdir dir="${runtime.classes}"/>
